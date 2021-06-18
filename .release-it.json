@@ -1,0 +1,13 @@
+{
+  "git": {
+    "requireCleanWorkingDir": false
+  },
+  "hooks": {
+    "after:init": [
+      "t2k"
+    ]
+  },
+  "github": {
+    "release": true
+  }
+}

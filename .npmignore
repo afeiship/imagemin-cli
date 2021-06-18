@@ -1,0 +1,16 @@
+.idea
+.DS_Store
+**/npm-debug.log
+**/node_modules
+test
+__tests__
+src
+build
+gulpfile.js
+docs
+Gemfile
+Rakefile
+
+.editorconfig
+.release-it.json
+.prettierrc
