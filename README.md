@@ -20,9 +20,10 @@ npm i && npm link
 Usage: imagemin-cli [options]
 
 Options:
-  -V, --version  output the version number
-  -d, --debug    only show cmds, but not clean.
-  -h, --help     display help for command
+  -V, --version               output the version number
+  -i, --input <list>          Your input globs.
+  -d, --destination <string>  Your output dir.
+  -h, --help                  display help for command
 ~~~
 
 ## license
