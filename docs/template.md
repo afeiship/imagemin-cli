@@ -18,6 +18,13 @@ npm i && npm link
 ## usage
 ~~~
 __USAGE__
+
+<!-- Manual usage -->
+# 1. common(change dest + logger)
+imc -d dist -l
+
+# 2. override
+imc -o
 ~~~
 
 ## license

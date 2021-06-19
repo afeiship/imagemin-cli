@@ -25,7 +25,15 @@ Options:
   -d, --destination <string>  Your output dir.
   -o, --override              Use the same input/output override the original
                               file(DANGER).
+  -l, --log                   Show logger.
   -h, --help                  display help for command
+
+<!-- Manual usage -->
+# 1. common(change dest + logger)
+imc -d dist -l
+
+# 2. override
+imc -o
 ~~~
 
 ## license
