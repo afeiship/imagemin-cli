@@ -8,7 +8,8 @@
     "email": "1290657123@qq.com"
   },
   "bin": {
-    "imagemin-cli": "bin/index.js"
+    "imagemin-cli": "bin/index.js",
+    "imc": "bin/index.js"
   },
   "scripts": {
     "build": "gulp",
@@ -22,10 +23,12 @@
     "@jswork/next-sum": "^1.0.2",
     "chalk": "^4.1.0",
     "commander": "^6.2.1",
+    "globby": "^11.0.4",
     "gulp-rename": "^2.0.0",
     "imagemin": "^7.0.0",
     "imagemin-jpegtran": "^7.0.0",
     "imagemin-pngquant": "^9.0.2",
+    "listr": "^0.14.3",
     "require-dir": "^1.2.0",
     "yargs": "^13.2.4",
     "yargs-parser": "^20.2.7"
@@ -46,7 +49,15 @@
     "release-it": "^14.2.1"
   },
   "keywords": [
-    "boilerplate",
+    "image",
+    "png",
+    "jpeg",
+    "svg",
+    "jpg",
+    "imagemin",
+    "minify",
+    "tiny",
+    "compress",
     "cli"
   ]
 }

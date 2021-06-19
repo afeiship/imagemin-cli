@@ -23,6 +23,8 @@ Options:
   -V, --version               output the version number
   -i, --input <list>          Your input globs.
   -d, --destination <string>  Your output dir.
+  -o, --override              Use the same input/output override the original
+                              file(DANGER).
   -h, --help                  display help for command
 ~~~
 

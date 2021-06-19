@@ -4,6 +4,8 @@ const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
 const chalk = require('chalk');
+const globby = require('globby');
+const Listr = require('listr');
 
 // next packages:
 require('@jswork/next');
@@ -15,11 +17,15 @@ require('@jswork/next-sum');
 const { version } = nx.absolutePackage();
 const program = new Command();
 const defaults = require(`${process.env.HOME}/.aric/.imagemin-cli.json`);
+const OVERRIDE_OPTIONS = { input: ['*.{jpg,png}'], destination: '.' };
+const DEFAULT_STAT = { items: [], rate: 0 };
 
 program.version(version);
 program
   .option('-i, --input <list>', 'Your input globs.', (v) => v.split(','))
   .option('-d, --destination <string>', 'Your output dir.')
+  .option('-o, --override', 'Use the same input/output override the original file(DANGER).')
+  .option('-l, --log', 'Show logger.')
   .parse(process.argv);
 
 nx.declare({
@@ -32,31 +38,49 @@ nx.declare({
   methods: {
     init() {
       this.config = nx.safeAssign(defaults, program.opts());
+      this.config.override && nx.mix(this.config, OVERRIDE_OPTIONS);
+      this.files = globby.sync(this.config.input);
+      this.originals = this.files.map(nx.filesize);
     },
-    start() {
+    async start() {
       const { input, destination } = this.config;
-      imagemin(input, {
-        destination: destination,
-        plugins: [
-          imageminJpegtran(),
-          imageminPngquant({
-            quality: [0.6, 0.8]
-          })
-        ]
-      }).then((res) => {
-        console.log(this.stat(res));
-        console.log(chalk.green('🚗 minify success.'));
-      });
+      const tasks = new Listr([
+        {
+          title: 'step1: compressing...',
+          task: (ctx) => {
+            return imagemin(input, {
+              destination: destination,
+              plugins: [
+                imageminJpegtran(),
+                imageminPngquant({
+                  quality: [0.6, 0.8]
+                })
+              ]
+            }).then((res) => (ctx.min = res));
+          }
+        },
+        {
+          title: 'step2: stating...',
+          task: (ctx) => {
+            const res = this.stat(ctx.min);
+            ctx.stat = res;
+          }
+        }
+      ]);
+
+      const ctx = await tasks.run();
+      this.config.log && console.log(ctx.stat);
+      console.log(chalk.green('🚗 minify success.'));
     },
-    stat: function (inResponse) {
-      const items = inResponse.map((item) => {
+    stat(inResponse) {
+      if (!inResponse.length) return DEFAULT_STAT;
+      const items = inResponse.map((item, index) => {
         const { sourcePath, destinationPath } = item;
-        const res1 = nx.filesize(item.sourcePath);
         const res2 = nx.filesize(item.destinationPath);
         return {
           sourcePath,
           destinationPath,
-          srcSize: res1.size,
+          srcSize: this.originals[index].size,
           dstSize: res2.size
         };
       });
