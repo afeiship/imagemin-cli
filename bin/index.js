@@ -24,7 +24,7 @@ program.version(version);
 program
   .option('-i, --input <list>', 'Your input globs.', (v) => v.split(','))
   .option('-d, --destination <string>', 'Your output dir.')
-  .option('-o, --override', 'Use the same input/output override the original file(DANGER).')
+  .option('-o, --override', 'Use the same src/dst(DANGER!!!).')
   .option('-l, --log', 'Show logger.')
   .parse(process.argv);
 
