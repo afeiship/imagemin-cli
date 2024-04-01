@@ -12,6 +12,8 @@ const program = new Command();
 program.version(pkg.version);
 program
   .option('-f, --force', 'force to create')
+  .option('-q, --quality', 'quality of image')
+  .option('-t, --target-format', 'target format of image')
   .option('-v, --verbose', 'show verbose log')
   .parse(process.argv);
 
