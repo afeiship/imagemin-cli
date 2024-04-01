@@ -7,12 +7,14 @@ $ imc -h
 Usage: imc [options]
 
 Options:
-  -V, --version            output the version number
-  -i, --input <string>     your input globs (default: "*.*")
-  -o, --output <string>    your output dir (default: "dist")
-  -s, --scale <number>     scale of image(1-100) (default: 100)
-  -q, --quality <number>   quality of image(1-100) (default: 80)
-  -f, --format <string>    format of image
-  -v, --verbose <boolean>  show verbose log (default: false)
-  -h, --help               display help for command
+  -V, --version             output the version number
+  -i, --input <string>      your input globs (default: "*.*")
+  -o, --output <string>     your output dir (default: "dist")
+  -x, --width <number>      width of image
+  -y, --height <number>     height of image
+  -s, --scale <numbers...>  scale of image(1-100) (default: [100,100])
+  -q, --quality <number>    quality of image(1-100) (default: 80)
+  -f, --format <string>     format of image
+  -v, --verbose             show verbose log (default: false)
+  -h, --help                display help for command
 ```
