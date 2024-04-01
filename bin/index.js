@@ -19,7 +19,7 @@ program.version(pkg.version);
 program
   .addOption(new Option('-i, --input <string>', 'your input globs').default('*.*'))
   .addOption(new Option('-o, --output <string>', 'your output dir').default('dist'))
-  .addOption(new Option('-mode, --fit-mode <string>', 'fit mode of image').default('inside'))
+  .addOption(new Option('-m, --fit-mode <string>', 'fit mode of image').default('inside'))
   .addOption(new Option('-x, --width <number>', 'width of image').argParser(parseFloat))
   .addOption(new Option('-y, --height <number>', 'height of image').argParser(parseFloat))
   .addOption(new Option('-s, --scale <numbers...>', 'scale of image(1-100)').default(defPer).argParser(parseNums))
