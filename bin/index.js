@@ -33,6 +33,14 @@ program
  */
 
 class CliApp {
+  // ---- properties ----
+  get resizeOpts() {
+    return {
+      fit: 'inside',
+      withoutEnlargement: true,
+    };
+  }
+
   constructor() {
     this.args = program.args;
     this.opts = program.opts();
@@ -50,27 +58,34 @@ class CliApp {
     }
   }
 
+  getFormat(filename, format) {
+    const ext = path.extname(filename).slice(1);
+    const supported = SUPPORT_FORMATS.includes(format);
+    return supported ? format : ext;
+  }
+
+  getResizeWh(metadata) {
+    const { width, height, scale } = this.opts;
+    const [wP, hP] = scale;
+    const wp = wP || 100;
+    const hp = hP || wP || 100;
+    const _width = parseInt(width || metadata.width * (wp / 100));
+    const _height = parseInt(height || metadata.height * (hp / 100));
+    return { width: _width, height: _height };
+  }
+
   run() {
-    const { input, format, quality, width, height, scale } = this.opts;
+    const { input, format, quality } = this.opts;
     const files = globbySync(input);
     this.ensureDir();
     files.forEach((file) => {
-      const isSupportFormat = SUPPORT_FORMATS.includes(format);
-      const ext = path.extname(file).slice(1);
-      const fmt = isSupportFormat ? format : ext;
+      const fmt = this.getFormat(file, format);
       const outputFile = path.join(this.opts.output, path.basename(file)).replace(/\.\w+$/, `.${fmt}`);
       const img = sharp(file);
-      const resizeOpts = { fit: 'inside', withoutEnlargement: true };
       img.metadata().then((metadata) => {
-        const { width: w, height: h } = metadata;
-        const [wP, hP] = scale;
-        const wp = wP || 100;
-        const hp = hP || wP || 100;
-        const _width = parseInt(width || w * (wp / 100));
-        const _height = parseInt(height || h * (hp / 100));
-
+        const wh = this.getResizeWh(metadata);
         img
-          .resize(_width, _height, resizeOpts)
+          .resize(wh.width, wh.height, this.resizeOpts)
           .toFormat(fmt, { quality })
           .toFile(outputFile, (err) => {
             if (err) return console.error(err);
