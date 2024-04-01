@@ -64,10 +64,13 @@ class CliApp {
       img.metadata().then((metadata) => {
         const { width: w, height: h } = metadata;
         const [wP, hP] = percentage;
-        const _width = w * (wP / 100);
-        const _height = h * (hP / 100);
+        const wp = wP || 100;
+        const hp = hP || wP || 100;
+        const _width = w * (wp / 100);
+        const _height = h * (hp / 100);
+
         img
-          .resize(width || _width, height || _height, resizeOpts)
+          .resize(parseInt(width || _width), parseInt(height || _height), resizeOpts)
           .toFormat(fmt, { quality })
           .toFile(outputFile, (err) => {
             if (err) return console.error(err);
