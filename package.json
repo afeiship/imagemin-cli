@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "commander": "^11.1.0",
+    "globby": "^14.0.1",
     "sharp": "^0.33.3"
   }
 }

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { join } from 'path';
 import { createRequire } from 'module';
+// import sharp from 'sharp';
+import { globby } from 'globby';
 
 const __dirname = new URL('../', import.meta.url).pathname;
 const require = createRequire(__dirname);
@@ -12,7 +13,10 @@ const program = new Command();
 program.version(pkg.version);
 program
   .option('-f, --force', 'force to create')
-  .option('-q, --quality', 'quality of image')
+  .option('-i, --input', 'your input globs')
+  .option('-o, --output', 'your output dir')
+  .option('-s, --scale', 'scale of image(1-100)')
+  .option('-q, --quality', 'quality of image(1-100)')
   .option('-t, --target-format', 'target format of image')
   .option('-v, --verbose', 'show verbose log')
   .parse(process.argv);
@@ -34,7 +38,8 @@ class CliApp {
   }
 
   run() {
-    this.log('run cli: ', __dirname, this.args, this.opts, pkg.version);
+    console.log(this.args);
+    // this.log('run cli: ', __dirname, this.args, this.opts, pkg.version);
   }
 }
 
