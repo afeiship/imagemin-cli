@@ -12,8 +12,8 @@ const require = createRequire(__dirname);
 const pkg = require('./package.json');
 const program = new Command();
 const SUPPORT_FORMATS = ['jpeg', 'png', 'webp', 'gif'];
-const defaultPercentage = [100, 100];
-const toNumbers = (n) => n.split(',').map(parseFloat);
+const defPer = [100, 100];
+const parseNums = (n) => n.split(',').map(parseFloat);
 
 program.version(pkg.version);
 program
@@ -21,7 +21,7 @@ program
   .addOption(new Option('-o, --output <string>', 'your output dir').default('dist'))
   .addOption(new Option('-w, --width <number>', 'width of image').argParser(parseFloat))
   .addOption(new Option('-h, --height <number>', 'height of image').argParser(parseFloat))
-  .addOption(new Option('-p, --percentage <numbers...>', 'percentage').default(defaultPercentage).argParser(toNumbers))
+  .addOption(new Option('-s, --scale <numbers...>', 'scale of image(1-100)').default(defPer).argParser(parseNums))
   .addOption(new Option('-q, --quality <number>', 'quality of image(1-100)').default(80).argParser(parseFloat))
   .addOption(new Option('-f, --format <string>', 'format of image'))
   .addOption(new Option('-v, --verbose', 'show verbose log').default(false))
@@ -51,7 +51,7 @@ class CliApp {
   }
 
   run() {
-    const { input, format, quality, width, height, percentage } = this.opts;
+    const { input, format, quality, width, height, scale } = this.opts;
     const files = globbySync(input);
     this.ensureDir();
     files.forEach((file) => {
@@ -63,14 +63,14 @@ class CliApp {
       const resizeOpts = { fit: 'inside', withoutEnlargement: true };
       img.metadata().then((metadata) => {
         const { width: w, height: h } = metadata;
-        const [wP, hP] = percentage;
+        const [wP, hP] = scale;
         const wp = wP || 100;
         const hp = hP || wP || 100;
-        const _width = w * (wp / 100);
-        const _height = h * (hp / 100);
+        const _width = parseInt(width || w * (wp / 100));
+        const _height = parseInt(height || h * (hp / 100));
 
         img
-          .resize(parseInt(width || _width), parseInt(height || _height), resizeOpts)
+          .resize(_width, _height, resizeOpts)
           .toFormat(fmt, { quality })
           .toFile(outputFile, (err) => {
             if (err) return console.error(err);
