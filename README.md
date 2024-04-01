@@ -1,15 +1,18 @@
 # imagemin-cli
 > Imagemin cli.
 
-## template
-```sh
-# clone the template
-git clone git@github.com:aric-tpls/imagemin-cli.git
-mvg
+## usage
+```shell
+$ imc -h
+Usage: imc [options]
 
-# or use tiged
-tiged git@github.com:aric-tpls/imagemin-cli.git --mode=git --disable-cache
-
-# replace the template
-rifc
+Options:
+  -V, --version            output the version number
+  -i, --input <string>     your input globs (default: "*.*")
+  -o, --output <string>    your output dir (default: "dist")
+  -s, --scale <number>     scale of image(1-100) (default: 100)
+  -q, --quality <number>   quality of image(1-100) (default: 80)
+  -f, --format <string>    format of image
+  -v, --verbose <boolean>  show verbose log (default: false)
+  -h, --help               display help for command
 ```
