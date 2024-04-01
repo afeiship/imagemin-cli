@@ -12,15 +12,19 @@ const require = createRequire(__dirname);
 const pkg = require('./package.json');
 const program = new Command();
 const SUPPORT_FORMATS = ['jpeg', 'png', 'webp', 'gif'];
+const defaultPercentage = [100, 100];
+const toNumbers = (n) => n.split(',').map(parseFloat);
 
 program.version(pkg.version);
 program
   .addOption(new Option('-i, --input <string>', 'your input globs').default('*.*'))
   .addOption(new Option('-o, --output <string>', 'your output dir').default('dist'))
-  .addOption(new Option('-s, --scale <number>', 'scale of image(1-100)').default(100).argParser(parseFloat))
+  .addOption(new Option('-w, --width <number>', 'width of image').argParser(parseFloat))
+  .addOption(new Option('-h, --height <number>', 'height of image').argParser(parseFloat))
+  .addOption(new Option('-p, --percentage <numbers...>', 'percentage').default(defaultPercentage).argParser(toNumbers))
   .addOption(new Option('-q, --quality <number>', 'quality of image(1-100)').default(80).argParser(parseFloat))
   .addOption(new Option('-f, --format <string>', 'format of image'))
-  .addOption(new Option('-v, --verbose <boolean>', 'show verbose log').default(false))
+  .addOption(new Option('-v, --verbose', 'show verbose log').default(false))
   .parse(process.argv);
 
 /**
@@ -47,7 +51,7 @@ class CliApp {
   }
 
   run() {
-    const { input, format, quality, wepb } = this.opts;
+    const { input, format, quality, width, height, percentage } = this.opts;
     const files = globbySync(input);
     this.ensureDir();
     files.forEach((file) => {
@@ -55,7 +59,21 @@ class CliApp {
       const ext = path.extname(file).slice(1);
       const fmt = isSupportFormat ? format : ext;
       const outputFile = path.join(this.opts.output, path.basename(file)).replace(/\.\w+$/, `.${fmt}`);
-      sharp(file).toFormat(fmt, { quality }).toFile(outputFile);
+      const img = sharp(file);
+      const resizeOpts = { fit: 'inside', withoutEnlargement: true };
+      img.metadata().then((metadata) => {
+        const { width: w, height: h } = metadata;
+        const [wP, hP] = percentage;
+        const _width = w * (wP / 100);
+        const _height = h * (hP / 100);
+        img
+          .resize(width || _width, height || _height, resizeOpts)
+          .toFormat(fmt, { quality })
+          .toFile(outputFile, (err) => {
+            if (err) return console.error(err);
+            this.log(`${file} -> ${outputFile}`);
+          });
+      });
     });
   }
 }
