@@ -11,7 +11,7 @@ const __dirname = new URL('../', import.meta.url).pathname;
 const require = createRequire(__dirname);
 const pkg = require('./package.json');
 const program = new Command();
-const SUPPORT_FORMATS = ['jpeg', 'png', 'webp', 'gif'];
+const SUPPORT_FORMATS = ['jpeg', 'png', 'webp', 'gif', 'svg'];
 const defPer = [100, 100];
 const parseNums = (n) => n.split(',').map(parseFloat);
 
