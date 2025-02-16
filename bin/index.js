@@ -82,7 +82,10 @@ class CliApp {
     this.ensureDir();
     files.forEach((file) => {
       const fmt = this.getFormat(file, format);
-      const outputFile = path.join(this.opts.output, path.basename(file)).replace(/\.\w+$/, `.${fmt}`);
+      const basename = path.basename(file);
+      const isReplaceMode = this.opts.output === '.';
+      const _basename = isReplaceMode ? `${basename}_tmp` : basename;
+      const outputFile = path.join(this.opts.output, _basename).replace(/\.\w+$/, `.${fmt}`);
       const img = sharp(file);
       img.metadata().then((metadata) => {
         const wh = this.getResizeWh(metadata);
@@ -92,6 +95,16 @@ class CliApp {
           .toFile(outputFile, (err) => {
             if (err) return console.error(err);
             this.log(`${file} -> ${outputFile}`);
+
+            // if replace mode, remove original file
+            if (isReplaceMode) {
+              fs.unlinkSync(file);
+              // remove _tmp suffix
+              const newBasename = basename.replace(/_tmp$/, '');
+              const newFile = path.join(this.opts.output, newBasename).replace(/\.\w+$/, `.${fmt}`);
+              fs.renameSync(outputFile, newFile);
+              this.log(`${outputFile} -> ${newFile}`);
+            }
           });
       });
     });
