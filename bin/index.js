@@ -84,7 +84,7 @@ class CliApp {
       const fmt = this.getFormat(file, format);
       const basename = path.basename(file);
       const isReplaceMode = this.opts.output === '.';
-      const _basename = isReplaceMode ? `${basename}_tmp` : basename;
+      const _basename = isReplaceMode ? `_tmp_${basename}` : basename;
       const outputFile = path.join(this.opts.output, _basename).replace(/\.\w+$/, `.${fmt}`);
       const img = sharp(file);
       img.metadata().then((metadata) => {
@@ -99,8 +99,8 @@ class CliApp {
             // if replace mode, remove original file
             if (isReplaceMode) {
               fs.unlinkSync(file);
-              // remove _tmp suffix
-              const newBasename = basename.replace(/_tmp$/, '');
+              // remove _tmp_ suffix
+              const newBasename = basename.replace(/_tmp_$/, '');
               const newFile = path.join(this.opts.output, newBasename).replace(/\.\w+$/, `.${fmt}`);
               fs.renameSync(outputFile, newFile);
               this.log(`${outputFile} -> ${newFile}`);
