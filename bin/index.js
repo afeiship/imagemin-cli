@@ -11,7 +11,7 @@ const __dirname = new URL('../', import.meta.url).pathname;
 const require = createRequire(__dirname);
 const pkg = require('./package.json');
 const program = new Command();
-const SUPPORT_FORMATS = ['jpeg', 'png', 'webp', 'gif', 'svg'];
+const SUPPORT_FORMATS = ['jpeg', 'jpg', 'png', 'webp', 'gif', 'svg'];
 const defPer = [100, 100];
 const parseNums = (n) => n.split(',').map(parseFloat);
 
@@ -24,7 +24,7 @@ program
   .addOption(new Option('-y, --height <number>', 'height of image').argParser(parseFloat))
   .addOption(new Option('-s, --scale <numbers...>', 'scale of image(1-100)').default(defPer).argParser(parseNums))
   .addOption(new Option('-q, --quality <number>', 'quality of image(1-100)').default(80).argParser(parseFloat))
-  .addOption(new Option('-f, --format <string>', 'format of image'))
+  .addOption(new Option('-f, --format <string>', 'format of image').choices(SUPPORT_FORMATS))
   .addOption(new Option('-v, --verbose', 'show verbose log').default(false))
   .parse(process.argv);
 
